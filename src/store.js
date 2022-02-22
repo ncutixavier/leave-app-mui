@@ -17,7 +17,13 @@ const reducer = {
   getAllUsers: getAllUsersReducer,
 };
 
+const middleware = [];
+
+if (process.env.NODE_ENV === `development`) {
+  middleware.push(logger);
+}
+
 export default configureStore({
   reducer,
-  middleware: [thunk, logger],
+  middleware: [thunk, ...middleware],
 });
