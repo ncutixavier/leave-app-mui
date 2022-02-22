@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useTheme } from "@mui/material/styles";
+import React, { useEffect } from "react";
+// import { useTheme } from "@mui/material/styles";
 import {
   Container,
   Box,
   Typography,
-  Button,
+  // Button,
   CircularProgress,
   Alert,
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import AddIcon from "@mui/icons-material/Add";
+// import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui/material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogTitle from "@mui/material/DialogTitle";
+// import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -31,7 +31,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import DialogContentText from "@mui/material/DialogContentText";
+// import DialogContentText from "@mui/material/DialogContentText";
 import { getAllUsers } from "../features/user/getAllUsers";
 
 function createData(name, supervisor_name, supervisor_email) {
@@ -72,12 +72,12 @@ const TopHeader = styled(Box)({
 });
 
 const Users = () => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const dispatch = useDispatch();
-  const [allUsers, setAllUsers] = useState([]);
+  // const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
-    dispatch(getAllUsers()).then((res) => setAllUsers(res.payload));
+    dispatch(getAllUsers());
   }, [dispatch]);
 
   const users = useSelector((state) => state.getAllUsers);
@@ -144,11 +144,8 @@ const Users = () => {
 
   const {
     register,
-    handleSubmit,
+    // handleSubmit,
     watch,
-    setValue,
-    resetField,
-    formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
