@@ -72,7 +72,7 @@ export default function Login() {
         setIsSubmitted(false);
         setLoginSuccess({ display: "flex", message: res.data.message });
         setLoginError({ display: "none", message: "" });
-        navigate("/dashboard/departments");
+        navigate("/admin/departments");
       }
     } catch (err) {
       setLoginError({ display: "flex", message: err.data.message });
@@ -115,7 +115,6 @@ export default function Login() {
             <TextField
               fullWidth
               label="Email"
-              id="fullWidth"
               size="small"
               name="email"
               control={control}
@@ -128,7 +127,6 @@ export default function Login() {
             <TextField
               fullWidth
               label="Password"
-              id="fullWidth"
               size="small"
               name="password"
               type="password"
