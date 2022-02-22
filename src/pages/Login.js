@@ -72,7 +72,7 @@ export default function Login() {
         setIsSubmitted(false);
         setLoginSuccess({ display: "flex", message: res.data.message });
         setLoginError({ display: "none", message: "" });
-        navigate("/dashboard/dep");
+        navigate("/dashboard/departments");
       }
     } catch (err) {
       setLoginError({ display: "flex", message: err.data.message });
