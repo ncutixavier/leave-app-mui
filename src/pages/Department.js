@@ -39,6 +39,8 @@ import { addNewDepartment } from "../features/department/addNewDepartment";
 import { updateDepartment } from "../features/department/updateDepartment";
 import { deleteDepartment } from "../features/department/deleteDepartment";
 import DialogContentText from "@mui/material/DialogContentText";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import CloseIcon from "@mui/icons-material/Close";
 
 function createData(name, supervisor_name, supervisor_email) {
   return { name, supervisor_name, supervisor_email };
@@ -80,7 +82,7 @@ const TopHeader = styled(Box)({
 const Department = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [form, setForm] = useState({
     title: "",
     editBtnDisplay: "none",
@@ -102,22 +104,8 @@ const Department = () => {
     dispatch(getAllDepartments());
   }, [dispatch]);
 
-  let content, rowsData;
-  if (loadingStatus) {
-    content = (
-      <Box sx={{ position: "absolute", left: "47.5%", top: "45%" }}>
-        <CircularProgress size={60} />
-      </Box>
-    );
-  } else if (error) {
-    content = (
-      <Alert severity="error">
-        Error occured while fetching data. Please try again later.
-      </Alert>
-    );
-  } else if (departments.data && departments.data.data) {
-    rowsData = departments.data.data.departments;
-    content = (
+  const DisplayDataInTable = (rows) => { 
+    return (
       <TableContainer component={Paper} elevation={0}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
           <TableHead>
@@ -129,8 +117,8 @@ const Department = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rowsData.map((row) => (
-              <StyledTableRow key={row.name}>
+            {rows.map((row) => (
+              <StyledTableRow key={row._id}>
                 <StyledTableCell>{row.name}</StyledTableCell>
                 <StyledTableCell>{row.supervisor_name}</StyledTableCell>
                 <StyledTableCell>{row.supervisor_email}</StyledTableCell>
@@ -150,7 +138,25 @@ const Department = () => {
           </TableBody>
         </Table>
       </TableContainer>
+    )
+  }
+
+  let content, rowsData;
+  if (loadingStatus) {
+    content = (
+      <Box sx={{ position: "absolute", left: "47.5%", top: "45%" }}>
+        <CircularProgress size={60} />
+      </Box>
     );
+  } else if (error) {
+    content = (
+      <Alert severity="error">
+        Error occured while fetching data. Please try again later.
+      </Alert>
+    );
+  } else if (departments.data && departments.data.data) {
+    rowsData = departments.data.data.departments;
+    content = DisplayDataInTable(rowsData);
   }
 
   const handleAlertOpen = (row) => {
@@ -343,7 +349,11 @@ const Department = () => {
       <Divider sx={{ my: 2 }} />
       {content}
 
-      <Dialog open={openEditModal.open} onClose={handleClose}>
+      <Dialog
+        fullScreen={fullScreen}
+        open={openEditModal.open}
+        onClose={handleClose}
+      >
         <DialogTitle
           sx={{
             backgroundColor: theme.palette.primary.main,
@@ -351,6 +361,18 @@ const Department = () => {
           }}
         >
           {form.title}
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "white",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <Divider />
 

@@ -16,7 +16,8 @@ import { useDispatch } from "react-redux";
 import { login } from "../features/LoginSlice";
 
 const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4),
+  padding: theme.spacing(3),
+  margin: theme.spacing(3),
   color: theme.palette.text.secondary,
 }));
 
@@ -26,10 +27,7 @@ const FormInput = styled("div")(({ theme }) => ({
 
 const useStyles = makeStyles(({ spacing }) => ({
   loginForm: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    height: "55vh",
+   
   },
 }));
 
@@ -81,75 +79,75 @@ export default function Login() {
   };
 
   return (
-    <Grid
-      container
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
-      sx={{ background: theme.palette.primary.main, height: "100vh" }}
-    >
-      <Grid item xs={12} sm={8} md={4}>
-        <Typography
-          variant="h5"
-          sx={{
-            my: 3,
-            color: "white",
-            textAlign: "center",
-            textTransform: "uppercase",
-          }}
-        >
-          Leave Application System
-        </Typography>
-
-        <Item className={classes.loginForm}>
-          <Alert severity="error" sx={{ display: loginError.display }}>
-            {loginError.message ?? "Error occured while logging in"}
-          </Alert>
-          <Alert severity="success" sx={{ display: loginSuccess.display }}>
-            {loginSuccess.message ?? "Login successful"}
-          </Alert>
-          <Typography variant="h5" sx={{ my: 2, textAlign: "center" }}>
-            Log in
-          </Typography>
-          <FormInput>
-            <TextField
-              fullWidth
-              label="Email"
-              size="small"
-              name="email"
-              control={control}
-              {...register("email")}
-              error={errors.email ? true : false}
-              helperText={errors.email ? errors.email.message : null}
-            />
-          </FormInput>
-          <FormInput>
-            <TextField
-              fullWidth
-              label="Password"
-              size="small"
-              name="password"
-              type="password"
-              control={control}
-              {...register("password")}
-              error={errors.password ? true : false}
-              helperText={errors.password ? errors.password.message : null}
-            />
-          </FormInput>
-          <Button
-            color="primary"
-            variant="contained"
-            fullWidth
-            onClick={handleSubmit(onSubmit)}
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ background: theme.palette.primary.main, minHeight: "100vh" }}
+      >
+        <Grid item xs={12} sm={8} md={4}>
+          <Typography
+            variant="h5"
+            sx={{
+              mt: 3,
+              color: "white",
+              textAlign: "center",
+              textTransform: "uppercase",
+            }}
           >
-            {isSubmitted ? (
-              <CircularProgress color="inherit" size={25} />
-            ) : (
-              "Login"
-            )}
-          </Button>
-        </Item>
+            Leave Application System
+          </Typography>
+
+          <Item className={classes.loginForm} sx={{ py: 9 }}>
+            <Alert severity="error" sx={{ display: loginError.display }}>
+              {loginError.message ?? "Error occured while logging in"}
+            </Alert>
+            <Alert severity="success" sx={{ display: loginSuccess.display }}>
+              {loginSuccess.message ?? "Login successful"}
+            </Alert>
+            <Typography variant="h5" sx={{ my: 2, textAlign: "center" }}>
+              Log in
+            </Typography>
+            <FormInput>
+              <TextField
+                fullWidth
+                label="Email"
+                size="small"
+                name="email"
+                control={control}
+                {...register("email")}
+                error={errors.email ? true : false}
+                helperText={errors.email ? errors.email.message : null}
+              />
+            </FormInput>
+            <FormInput>
+              <TextField
+                fullWidth
+                label="Password"
+                size="small"
+                name="password"
+                type="password"
+                control={control}
+                {...register("password")}
+                error={errors.password ? true : false}
+                helperText={errors.password ? errors.password.message : null}
+              />
+            </FormInput>
+            <Button
+              color="primary"
+              variant="contained"
+              fullWidth
+              onClick={handleSubmit(onSubmit)}
+            >
+              {isSubmitted ? (
+                <CircularProgress color="inherit" size={25} />
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </Item>
+        </Grid>
       </Grid>
-    </Grid>
   );
 }

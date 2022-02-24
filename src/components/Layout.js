@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Outlet, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
+import { List } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -16,6 +16,7 @@ import ListItemText from "@mui/material/ListItemText";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import FolderIcon from "@mui/icons-material/Folder";
 import { useTheme } from "@mui/material/styles";
+import HomeIcon from "@mui/icons-material/Home";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -31,6 +32,11 @@ export default function Layout() {
   };
 
   const menuItems = [
+    {
+      text: "Home",
+      path: "/admin",
+      icon: <HomeIcon style={{ color: "white" }} />,
+    },
     {
       text: "Users",
       path: "/admin/users",
@@ -72,8 +78,14 @@ export default function Layout() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box
+      sx={{
+        flexGrow: 1,
+        backgroundColor: theme.palette.secondary.main,
+        minHeight: "100vh",
+      }}
+    >
+      <AppBar position="sticky">
         <Toolbar>
           <IconButton
             size="large"

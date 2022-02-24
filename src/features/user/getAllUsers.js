@@ -21,24 +21,24 @@ export const getAllUsersSlice = createSlice({
   initialState: {
     loading: false,
     error: null,
-    data: [],
+    usersData: [],
   },
   reducers: {},
   extraReducers: {
     [getAllUsers.pending]: (state, action) => {
       state.loading = true;
       state.error = null;
-      state.data = [];
+      state.usersData = [];
     },
     [getAllUsers.fulfilled]: (state, action) => {
       state.loading = false;
       state.error = null;
-      state.data = action.payload;
+      state.usersData = action.payload;
     },
     [getAllUsers.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-      state.data = [];
+      state.usersData = [];
     },
   },
 });

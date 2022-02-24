@@ -5,6 +5,7 @@ import Layout from "../components/Layout";
 import Department from "../pages/Department";
 import Login from "../pages/Login";
 import Users from "../pages/Users";
+import Admin from "../pages/Admin";
 
 const theme = createTheme({
   palette: {
@@ -12,11 +13,14 @@ const theme = createTheme({
       main: "#9c27b0",
     },
     secondary: {
-      main: "#f3e5f5",
+      main: "#f5f5f5",
     },
     error: {
       main: "#f44336",
     },
+    warning: {
+      main: "#ff9800",
+    }
   },
   typography: {
     fontFamily: `"Work Sans", "Helvetica", "Arial", sans-serif`,
@@ -35,6 +39,7 @@ const Index = () => {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="admin" element={<Layout />}>
+            <Route exact path="" element={<Admin />} />
             <Route exact path="departments" element={<Department />} />
             <Route exact path="users" element={<Users />} />
           </Route>
