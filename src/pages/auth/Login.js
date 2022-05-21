@@ -52,8 +52,7 @@ export default function Login() {
     } catch (err) {
       toast.error(err.data.message, {
         pauseOnHover: true,
-        position: toast.POSITION.TOP_CENTER,
-        theme: "colored",
+        position: toast.POSITION.TOP_CENTER
       });
       setIsSubmitted(false);
     }
