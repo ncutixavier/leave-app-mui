@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: "https://nx-leave-app.herokuapp.com/api/v1",
+  // baseURL: "https://nx-leave-app.herokuapp.com/api/v1",
+  baseURL: "https://nx-leave-backend.cleverapps.io/api/v1",
 });
 
 const requestHandler = (request) => {
@@ -12,7 +13,7 @@ const requestHandler = (request) => {
 const responseHandler = (response) => {
   if (response.status === 401) {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/auth/login";
   }
   return response;
 };
@@ -20,7 +21,7 @@ const responseHandler = (response) => {
 const errorHandler = (error) => {
   if (error.response.status === 401) {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/auth/login";
   }
   return Promise.reject(error);
 };
@@ -35,4 +36,4 @@ http.interceptors.response.use(
   (error) => errorHandler(error)
 );
 
-export default http
+export default http;

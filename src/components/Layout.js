@@ -74,7 +74,7 @@ export default function Layout() {
 
   const handlelogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   return (
@@ -119,7 +119,7 @@ export default function Layout() {
             <Button
               color="inherit"
               variant="outlined"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/auth/login")}
             >
               Login
             </Button>
