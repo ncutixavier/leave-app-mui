@@ -13,8 +13,7 @@ import { login } from "../../features/LoginSlice";
 import { Item, Title, SubTitle } from "../../components/Auth";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -71,7 +70,6 @@ export default function Login() {
         minHeight: "80vh",
       }}
     >
-      <ToastContainer />
       <Grid item xs={12} sm={8} md={4}>
         <Item>
           <Title variant="h5">Leave Application System</Title>

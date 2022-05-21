@@ -10,6 +10,8 @@ import Admin from "../pages/Admin";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 import Register from "../pages/auth/Register";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const theme = createTheme({
   palette: {
@@ -44,6 +46,7 @@ const theme = createTheme({
 const Index = () => {
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer />
       <Router>
         <Routes>
           <Route path="/" element={<Auth />} />
