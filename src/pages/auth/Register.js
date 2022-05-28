@@ -2,16 +2,24 @@ import * as React from "react";
 import { useState } from "react";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
-import { Button, CircularProgress, Autocomplete } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Autocomplete,
+  Skeleton,
+  Box,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
-import Alert from "@mui/material/Alert";
-import { useDispatch } from "react-redux";
-import { login } from "../../features/LoginSlice";
+// import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Item, Title, SubTitle } from "../../components/Auth";
+import {
+  getAllDepartments,
+  selectGetAllDepartments,
+} from "../../features/department/getAllDepartment";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -19,16 +27,16 @@ const FormInput = styled("div")(({ theme }) => ({
 
 export default function Register() {
   const dispatch = useDispatch();
-  let navigate = useNavigate();
-  const [loginError, setLoginError] = useState({
-    display: "none",
-    message: "",
-  });
-  const [loginSuccess, setLoginSuccess] = useState({
-    display: "none",
-    message: "",
-  });
+  // let navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const { departments, loadingStatus, error } = useSelector(
+    selectGetAllDepartments
+  );
+
+  React.useEffect(() => {
+    dispatch(getAllDepartments()).unwrap();
+  }, [dispatch]);
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -50,18 +58,12 @@ export default function Register() {
   const onSubmit = async (data) => {
     try {
       setIsSubmitted(true);
-      const res = await dispatch(login(data)).unwrap();
-      if (res.status === 200) {
-        setIsSubmitted(false);
-        setLoginSuccess({ display: "flex", message: res.data.message });
-        setLoginError({ display: "none", message: "" });
-        navigate("/admin/departments");
-      }
     } catch (err) {
-      setLoginError({ display: "flex", message: err.data.message });
       setIsSubmitted(false);
     }
   };
+
+  console.log(departments);
 
   return (
     <Grid
@@ -78,12 +80,7 @@ export default function Register() {
         <Item>
           <Title variant="h5">Leave Application System</Title>
           <SubTitle variant="h5">Let’s create you an account</SubTitle>
-          <Alert severity="error" sx={{ display: loginError.display }}>
-            {loginError.message ?? "Error occured while logging in"}
-          </Alert>
-          <Alert severity="success" sx={{ display: loginSuccess.display }}>
-            {loginSuccess.message ?? "Login successful"}
-          </Alert>
+
           <FormInput>
             <TextField
               fullWidth
@@ -121,15 +118,33 @@ export default function Register() {
               helperText={errors.password ? errors.password.message : null}
             />
           </FormInput>
-          <Autocomplete
-            id="clear-on-escape"
-            clearOnEscape
-            options={["Pending", "Received", "Inline"]}
-            sx={{ height: "4rem" }}
-            renderInput={(params) => (
-              <TextField {...params} label="Department" size="small" />
-            )}
-          />
+
+          {loadingStatus ? (
+            <Box sx={{ marginBottom: "1.3rem" }}>
+              <Skeleton variant="rectangular" height={38} />
+            </Box>
+          ) : error ? (
+            <>Error</>
+          ) : (
+            <Autocomplete
+              id="clear-on-escape"
+              clearOnEscape
+              loading={loadingStatus}
+              options={
+                loadingStatus
+                  ? []
+                  : error
+                  ? []
+                  : departments?.data?.data?.departments?.map(
+                      (item) => item.name
+                    )
+              }
+              sx={{ height: "4rem" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Department" size="small" />
+              )}
+            />
+          )}
 
           <Button
             color="primary"

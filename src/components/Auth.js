@@ -1,5 +1,5 @@
-import React from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { Grid, Paper, Avatar, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { styled } from "@mui/material/styles";
@@ -19,6 +19,10 @@ export const Title = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   fontSize: "1.6rem",
   lineHeight: "1.5",
+
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.45rem",
+  }
 }));
 
 export const SubTitle = styled(Typography)(({ theme }) => ({
@@ -32,7 +36,14 @@ export const SubTitle = styled(Typography)(({ theme }) => ({
 const Auth = () => {
   const theme = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   console.log(location.pathname);
+
+  useEffect(() => { 
+    if (location.pathname === "/") {
+      navigate("/auth");
+    }
+  }, [location.pathname, navigate]);
   return (
     <Grid
       container

@@ -50,16 +50,15 @@ const Index = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Auth />} />
-          <Route path="/auth" element={<Login />} />
-          <Route path="auth" element={<Auth />}>
-            <Route exact path="" element={<Login />} />
-            <Route exact path="login" element={<Login />} />
-            <Route exact path="recover-password" element={<ForgotPassword />} />
-            <Route exact path="reset-password" element={<ResetPassword />} />
-            <Route exact path="register" element={<Register />} />
+          <Route path="/auth/" element={<Auth />}>
+            <Route path="" element={<Login />} />
+            <Route path="login" element={<Login />} />
+            <Route path="recover-password" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="register" element={<Register />} />
           </Route>
           <Route path="admin" element={<Layout />}>
-            <Route exact path="" element={<Admin />} />
+            <Route path="" element={<Admin />} />
             <Route exact path="departments" element={<Department />} />
             <Route exact path="users" element={<Users />} />
           </Route>

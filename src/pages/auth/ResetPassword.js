@@ -2,17 +2,24 @@ import * as React from "react";
 import { useState } from "react";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
-import { Button, CircularProgress, Box } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Box,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import Alert from "@mui/material/Alert";
 import { useDispatch } from "react-redux";
-import { login } from "../../features/LoginSlice";
 import { Item, Title, SubTitle } from "../../components/Auth";
 import { useTheme } from "@emotion/react";
+import { resetPassword } from "../../features/auth/ResetPasswordSlice";
+import { showErrorMessage } from "../../utils/toast";
+import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -22,15 +29,8 @@ export default function Login() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
   const theme = useTheme();
-  const [loginError, setLoginError] = useState({
-    display: "none",
-    message: "",
-  });
-  const [loginSuccess, setLoginSuccess] = useState({
-    display: "none",
-    message: "",
-  });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validationSchema = Yup.object().shape({
     code: Yup.string().required("Code is required"),
@@ -39,7 +39,8 @@ export default function Login() {
       .min(8, "Password must be at least 8 characters"),
     confirmPassword: Yup.string()
       .required("Password is required")
-      .min(8, "Password must be at least 8 characters"),
+      .min(8, "Password must be at least 8 characters")
+      .oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 
   const {
@@ -54,18 +55,26 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       setIsSubmitted(true);
-      const res = await dispatch(login(data)).unwrap();
+      const payload = {
+        otp: data.code,
+        password: data.password,
+        email: localStorage.getItem("email"),
+      };
+      const res = await dispatch(resetPassword(payload)).unwrap();
       if (res.status === 200) {
         setIsSubmitted(false);
-        setLoginSuccess({ display: "flex", message: res.data.message });
-        setLoginError({ display: "none", message: "" });
-        navigate("/admin/departments");
+        navigate("/auth/login");
       }
     } catch (err) {
-      setLoginError({ display: "flex", message: err.data.message });
+      showErrorMessage(err.data.message);
+      console.log(err);
       setIsSubmitted(false);
     }
   };
+
+  const handleShowPassword = () => { 
+    setShowPassword(!showPassword);
+  }
 
   return (
     <Grid
@@ -82,20 +91,26 @@ export default function Login() {
         <Item>
           <Title variant="h5">Leave Application System</Title>
           <SubTitle variant="h5">Reset password</SubTitle>
-          <Alert severity="error" sx={{ display: loginError.display }}>
-            {loginError.message ?? "Error occured while logging in"}
-          </Alert>
-          <Alert severity="success" sx={{ display: loginSuccess.display }}>
-            {loginSuccess.message ?? "Login successful"}
-          </Alert>
-
           <FormInput>
             <TextField
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOutlined />
+                      ) : (
+                        <VisibilityOffOutlined />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               fullWidth
               label="Password"
               size="small"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               control={control}
               {...register("password")}
               error={errors.password ? true : false}
@@ -104,11 +119,24 @@ export default function Login() {
           </FormInput>
           <FormInput>
             <TextField
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOutlined />
+                      ) : (
+                        <VisibilityOffOutlined />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               fullWidth
               label="Confirm Password"
               size="small"
               name="confirmPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               control={control}
               {...register("confirmPassword")}
               error={errors.confirmPassword ? true : false}
@@ -137,7 +165,11 @@ export default function Login() {
               marginBottom: "1rem",
             }}
           >
-            code sent to <u>ncuti65@gmail.com</u>
+            {localStorage.getItem("email") ? (
+              <span>
+                code sent to <u>{localStorage.getItem("email")}</u>
+              </span>
+            ) : null}
           </Box>
 
           <Button

@@ -8,10 +8,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import Alert from "@mui/material/Alert";
 import { useDispatch } from "react-redux";
-import { login } from "../../features/LoginSlice";
+import { forgotPassword } from "../../features/auth/ForgotPasswordSlice";
 import { Item, Title, SubTitle } from "../../components/Auth";
+import { showSuccessMessage, showErrorMessage } from "../../utils/toast";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -20,14 +20,6 @@ const FormInput = styled("div")(({ theme }) => ({
 export default function ForgotPassword() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
-  const [loginError, setLoginError] = useState({
-    display: "none",
-    message: "",
-  });
-  const [loginSuccess, setLoginSuccess] = useState({
-    display: "none",
-    message: "",
-  });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validationSchema = Yup.object().shape({
@@ -46,16 +38,16 @@ export default function ForgotPassword() {
   const onSubmit = async (data) => {
     try {
       setIsSubmitted(true);
-      const res = await dispatch(login(data)).unwrap();
-      if (res.status === 200) {
+      console.log(data);
+      const response = await dispatch(forgotPassword(data)).unwrap();
+      if (response.status === 200) {
+        showSuccessMessage(response.data.message);
+        navigate("/auth/reset-password");
         setIsSubmitted(false);
-        setLoginSuccess({ display: "flex", message: res.data.message });
-        setLoginError({ display: "none", message: "" });
-        navigate("/admin/departments");
       }
     } catch (err) {
-      setLoginError({ display: "flex", message: err.data.message });
       setIsSubmitted(false);
+      showErrorMessage(err.data.message);
     }
   };
 
@@ -74,12 +66,6 @@ export default function ForgotPassword() {
         <Item>
           <Title variant="h5">Leave Application System</Title>
           <SubTitle variant="h5">Forgot password</SubTitle>
-          <Alert severity="error" sx={{ display: loginError.display }}>
-            {loginError.message ?? "Error occured while logging in"}
-          </Alert>
-          <Alert severity="success" sx={{ display: loginSuccess.display }}>
-            {loginSuccess.message ?? "Login successful"}
-          </Alert>
           <FormInput>
             <TextField
               fullWidth

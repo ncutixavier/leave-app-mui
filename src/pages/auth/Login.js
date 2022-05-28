@@ -2,18 +2,25 @@ import * as React from "react";
 import { useState } from "react";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
-import { Button, CircularProgress, Box } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Box,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../features/LoginSlice";
+import { login } from "../../features/auth/LoginSlice";
 import { Item, Title, SubTitle } from "../../components/Auth";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { toast } from "react-toastify";
+import { showErrorMessage } from "../../utils/toast";
+import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -24,6 +31,7 @@ export default function Login() {
   let navigate = useNavigate();
   const theme = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false);
+   const [showPassword, setShowPassword] = useState(false);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Invalid email"),
@@ -50,12 +58,13 @@ export default function Login() {
         navigate("/admin/departments");
       }
     } catch (err) {
-      toast.error(err.data.message, {
-        pauseOnHover: true,
-        position: toast.POSITION.TOP_CENTER
-      });
+      showErrorMessage(err.data.message);
       setIsSubmitted(false);
     }
+  };
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -87,6 +96,19 @@ export default function Login() {
           </FormInput>
           <FormInput>
             <TextField
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOutlined />
+                      ) : (
+                        <VisibilityOffOutlined />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               fullWidth
               label="Password"
               size="small"
