@@ -113,7 +113,7 @@ export default function Login() {
               label="Password"
               size="small"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               control={control}
               {...register("password")}
               error={errors.password ? true : false}
