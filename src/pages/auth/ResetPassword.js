@@ -67,14 +67,13 @@ export default function Login() {
       }
     } catch (err) {
       showErrorMessage(err.data.message);
-      console.log(err);
       setIsSubmitted(false);
     }
   };
 
-  const handleShowPassword = () => { 
+  const handleShowPassword = () => {
     setShowPassword(!showPassword);
-  }
+  };
 
   return (
     <Grid

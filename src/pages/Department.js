@@ -104,7 +104,7 @@ const Department = () => {
     dispatch(getAllDepartments());
   }, [dispatch]);
 
-  const DisplayDataInTable = (rows) => { 
+  const DisplayDataInTable = (rows) => {
     return (
       <TableContainer component={Paper} elevation={0}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
@@ -138,8 +138,8 @@ const Department = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    )
-  }
+    );
+  };
 
   let content, rowsData;
   if (loadingStatus) {
@@ -175,11 +175,9 @@ const Department = () => {
       if (res.status === 200) {
         setIsSubmitted(false);
         setOpen(false);
-        console.log("RESPONSE::", res);
         await dispatch(getAllDepartments());
       }
     } catch (err) {
-      console.log("ERROR::", err);
       setIsSubmitted(false);
     }
   };
@@ -210,7 +208,6 @@ const Department = () => {
   };
 
   const handleUpdateDepartment = async (data) => {
-    console.log("UPDATE::", data, rowId);
     try {
       setIsSubmitted(true);
       const res = await dispatch(
@@ -223,13 +220,11 @@ const Department = () => {
       ).unwrap();
       if (res.status === 200) {
         setOpenEditModal({ open: false });
-        console.log("RESPONSE::", res);
         setIsSubmitted(false);
         await dispatch(getAllDepartments());
         setFormError({ display: "none", message: "" });
       }
     } catch (err) {
-      console.log("ERROR::", err);
       setIsSubmitted(false);
       setFormError({
         display: "flex",
@@ -259,7 +254,6 @@ const Department = () => {
 
   useEffect(() => {
     const subscription = watch((data) => {
-      console.log("watch::", data);
       if (data.search) {
         const filteredData = rows.filter((row) => {
           return (
@@ -282,7 +276,6 @@ const Department = () => {
   }, [watch]);
 
   const handleEdit = (row) => {
-    console.log("EDIT::", row);
     setRowId(row._id);
     setForm({
       title: "Edit Department",

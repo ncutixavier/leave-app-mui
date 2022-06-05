@@ -37,7 +37,6 @@ const Auth = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location.pathname);
 
   useEffect(() => { 
     if (location.pathname === "/") {
