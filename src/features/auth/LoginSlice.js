@@ -7,6 +7,7 @@ export const login = createAsyncThunk(
     try {
       const response = await http.post("/users/login", data);
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", response.data.user.name);
       return response;
     } catch (err) {
       if (!err.response) {

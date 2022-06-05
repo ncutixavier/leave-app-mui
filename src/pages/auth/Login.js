@@ -55,7 +55,7 @@ export default function Login() {
       const res = await dispatch(login(data)).unwrap();
       if (res.status === 200) {
         setIsSubmitted(false);
-        navigate("/admin/departments");
+        navigate("/dashboard");
       }
     } catch (err) {
       showErrorMessage(err.data.message);

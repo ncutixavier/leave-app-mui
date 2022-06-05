@@ -10,6 +10,7 @@ import Admin from "../pages/Admin";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 import Register from "../pages/auth/Register";
+import Dashboard from "../pages/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
@@ -50,6 +51,7 @@ const Index = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/auth/" element={<Auth />}>
             <Route path="" element={<Login />} />
             <Route path="login" element={<Login />} />
