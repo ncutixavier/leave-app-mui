@@ -31,7 +31,7 @@ export default function Login() {
   let navigate = useNavigate();
   const theme = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false);
-   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Invalid email"),

@@ -9,6 +9,7 @@ import deleteDepartmentReducer from "./features/department/deleteDepartment";
 import getAllUsersReducer from "./features/user/getAllUsers";
 import forgotpasswordReducer from "./features/auth/ForgotPasswordSlice";
 import resetpasswordReducer from "./features/auth/ResetPasswordSlice";
+import registerReducer from "./features/auth/RegisterSlice";
 
 const reducer = {
   login: loginReducer,
@@ -19,6 +20,7 @@ const reducer = {
   getAllUsers: getAllUsersReducer,
   forgotPassword: forgotpasswordReducer,
   resetPassword: resetpasswordReducer,
+  register: registerReducer,
 };
 
 const middleware = [];

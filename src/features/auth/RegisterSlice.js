@@ -1,23 +1,23 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import http from "../../http-common";
 
-export const getAllDepartments = createAsyncThunk(
-  "department/fetchAll",
-  async () => {
+export const register = createAsyncThunk(
+  "user/register",
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await http.get("/departments");
+      const response = await http.post("/users/register", data);
       return response;
     } catch (err) {
       if (!err.response) {
         throw err;
       }
-      Promise.reject(err.response);
+      return rejectWithValue(err.response);
     }
   }
 );
 
-export const departmentSlice = createSlice({
-  name: "getAllDepartments",
+export const registerSlice = createSlice({
+  name: "register",
   initialState: {
     loading: false,
     error: null,
@@ -25,17 +25,17 @@ export const departmentSlice = createSlice({
   },
   reducers: {},
   extraReducers: {
-    [getAllDepartments.pending]: (state, action) => {
+    [register.pending]: (state, action) => {
       state.loading = true;
       state.error = null;
       state.data = [];
     },
-    [getAllDepartments.fulfilled]: (state, action) => {
+    [register.fulfilled]: (state, action) => {
       state.loading = false;
       state.error = null;
       state.data = action.payload;
     },
-    [getAllDepartments.rejected]: (state, action) => {
+    [register.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.payload;
       state.data = [];
@@ -43,6 +43,5 @@ export const departmentSlice = createSlice({
   },
 });
 
-export const selectGetAllDepartments = (state) => state.getAllDepartments;
-export default departmentSlice.reducer;
-export const departmentReducer = departmentSlice.reducer;
+export const selectregister = (state) => state.register;
+export default registerSlice.reducer;

@@ -6,20 +6,23 @@ import {
   Button,
   CircularProgress,
   Autocomplete,
-  Skeleton,
-  Box,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Item, Title, SubTitle } from "../../components/Auth";
 import {
   getAllDepartments,
   selectGetAllDepartments,
 } from "../../features/department/getAllDepartment";
+import { register as registerUser } from "../../features/auth/RegisterSlice";
+import { showErrorMessage } from "../../utils/toast";
+import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -27,15 +30,13 @@ const FormInput = styled("div")(({ theme }) => ({
 
 export default function Register() {
   const dispatch = useDispatch();
-  // let navigate = useNavigate();
+  let navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const { departments, loadingStatus, error } = useSelector(
-    selectGetAllDepartments
-  );
+  const [showPassword, setShowPassword] = useState(false);
+  const { data, loading } = useSelector(selectGetAllDepartments);
 
   React.useEffect(() => {
-    dispatch(getAllDepartments()).unwrap();
+    dispatch(getAllDepartments());
   }, [dispatch]);
 
   const validationSchema = Yup.object().shape({
@@ -58,12 +59,22 @@ export default function Register() {
   const onSubmit = async (data) => {
     try {
       setIsSubmitted(true);
+      const res = await dispatch(registerUser(data)).unwrap();
+      if (res.status === 201) {
+        setIsSubmitted(false);
+        navigate("/auth");
+      }
     } catch (err) {
       setIsSubmitted(false);
+      showErrorMessage(err.data.message);
     }
   };
 
-  console.log(departments);
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  if (loading) return <CircularProgress />;
 
   return (
     <Grid
@@ -107,11 +118,24 @@ export default function Register() {
           </FormInput>
           <FormInput>
             <TextField
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityOutlined />
+                      ) : (
+                        <VisibilityOffOutlined />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               fullWidth
               label="Password"
               size="small"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               control={control}
               {...register("password")}
               error={errors.password ? true : false}
@@ -119,32 +143,21 @@ export default function Register() {
             />
           </FormInput>
 
-          {loadingStatus ? (
-            <Box sx={{ marginBottom: "1.3rem" }}>
-              <Skeleton variant="rectangular" height={38} />
-            </Box>
-          ) : error ? (
-            <>Error</>
-          ) : (
-            <Autocomplete
-              id="clear-on-escape"
-              clearOnEscape
-              loading={loadingStatus}
-              options={
-                loadingStatus
-                  ? []
-                  : error
-                  ? []
-                  : departments?.data?.data?.departments?.map(
-                      (item) => item.name
-                    )
-              }
-              sx={{ height: "4rem" }}
-              renderInput={(params) => (
-                <TextField {...params} label="Department" size="small" />
-              )}
-            />
-          )}
+          <Autocomplete
+            id="clear-on-escape"
+            clearOnEscape
+            loading={loading}
+            options={data.data?.departments.map((option) => option.name)}
+            sx={{ height: "4rem" }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Department"
+                size="small"
+                {...register("department_name")}
+              />
+            )}
+          />
 
           <Button
             color="primary"
