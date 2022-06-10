@@ -1,4 +1,4 @@
 # leave-app-mui
-Leave App with MUI
+Leave App
 
 https://nx-leave-app.netlify.app/
