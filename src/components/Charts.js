@@ -1,6 +1,5 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { purple } from "@mui/material/colors";
 
 const rand = () => Math.floor(Math.random() * 255);
 
@@ -23,7 +22,8 @@ const data = {
     {
       label: "Total Leave Requests",
       data: Array.from({ length: 12 }, (v, i) => rand()),
-      backgroundColor: purple[300],
+      backgroundColor: "rgba(173,11,99,0.5)",
+      borderColor: "#AD0B63",
     },
   ],
 };

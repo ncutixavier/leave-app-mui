@@ -10,16 +10,18 @@ import Admin from "../pages/Admin";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 import Register from "../pages/auth/Register";
-import Dashboard from "../pages/Dashboard";
+import Dashboard from "../components/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import ProtectRoute from "./ProtectRoute";
+import HomeEmployee from "../pages/employee/Home";
 
 const theme = createTheme({
   palette: {
     primary: {
       main: "#AD0B63",
       text: "#000000",
+      contrast: "#ccc",
     },
     secondary: {
       main: "#f5f5f5",
@@ -54,7 +56,9 @@ const Index = () => {
         <Routes>
           <Route path="/" element={<Auth />} />
           <Route element={<ProtectRoute />}>
-            <Route path="employee" element={<Dashboard />} />
+            <Route path="employee" element={<Dashboard />} >
+              <Route path="" element={<HomeEmployee />} />
+            </Route>
           </Route>
 
           <Route path="/auth" element={<Auth />}>
