@@ -21,6 +21,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
+import { decodeToken } from "../utils/auth";
 
 const drawerWidth = 230;
 
@@ -47,6 +48,7 @@ export default function Dashboard(props) {
   const theme = useTheme();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const user = decodeToken();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -56,6 +58,13 @@ export default function Dashboard(props) {
     localStorage.clear();
     navigate("/auth");
   };
+
+  React.useEffect(() => {
+    if (!(user && user.role === "employee")) {
+      localStorage.clear();
+      navigate("/auth");
+    }
+  }, [navigate, user]);
 
   const drawer = (
     <Box

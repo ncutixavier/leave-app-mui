@@ -1,12 +1,14 @@
-import React from 'react'
-import { Outlet, Navigate } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Auth from "../components/Auth";
 
-const ProtectRoute = ({ isAllowed, redirectPath = "/auth", children }) => {
-  if (!isAllowed) {
-    return <Navigate to={redirectPath} replace />;
+const ProtectRoute = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return <Auth />;
   }
 
-  return children ? children : <Outlet />;
+  return <Outlet />;
 };
 
 export default ProtectRoute;
