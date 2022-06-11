@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { showErrorMessage } from "../../utils/toast";
 import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
+import { decodeToken } from "../../utils/auth";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -32,6 +33,7 @@ export default function Login() {
   const theme = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const user = decodeToken();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Invalid email"),
@@ -55,7 +57,11 @@ export default function Login() {
       const res = await dispatch(login(data)).unwrap();
       if (res.status === 200) {
         setIsSubmitted(false);
-        navigate("/dashboard");
+        if (user && user.role === "employee") {
+          navigate("/employee");
+        } else if (user && user.role === "admin") {
+          navigate("/admin");
+        }
       }
     } catch (err) {
       showErrorMessage(err.data.message);

@@ -38,7 +38,6 @@ export default function ForgotPassword() {
   const onSubmit = async (data) => {
     try {
       setIsSubmitted(true);
-      data;
       const response = await dispatch(forgotPassword(data)).unwrap();
       if (response.status === 200) {
         showSuccessMessage(response.data.message);

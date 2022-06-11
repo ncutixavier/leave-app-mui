@@ -107,12 +107,10 @@ const Users = () => {
       const { rowId } = state;
       const response = await dispatch(deleteUser(rowId)).unwrap();
       if (response.status === 200) {
-        "DELETE::", response;
         setstate({ ...state, loading: false, openAlert: false });
         dispatch(getAllUsers());
       }
     } catch (error) {
-      "DELETE-ERR::", error;
       setstate({
         ...state,
         loading: false,
@@ -131,7 +129,6 @@ const Users = () => {
   };
 
   const handleOpenEditModal = (row) => {
-    "row::", row;
     setValue("name", row.name);
     setValue("email", row.email);
     setValue("role", state.role);
@@ -150,7 +147,6 @@ const Users = () => {
 
   const handleEdit = async (data) => {
     setstate({ ...state, loading: true });
-    "DATA::", data;
   };
 
   const displayData = (rows) => {
@@ -245,7 +241,6 @@ const Users = () => {
     departmentOptions = "";
   } else if (departmentsData && departmentsData.data) {
     departmentOptions = departmentsData.data.departments;
-    "DEPARTMENTS::", departmentOptions;
   }
 
   return (

@@ -4,6 +4,7 @@ import { Grid, Paper, Avatar, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { styled } from "@mui/material/styles";
 import logo from "../assets/logo.png";
+import { decodeToken } from "../utils/auth";
 
 export const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -22,7 +23,7 @@ export const Title = styled(Typography)(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {
     fontSize: "1.45rem",
-  }
+  },
 }));
 
 export const SubTitle = styled(Typography)(({ theme }) => ({
@@ -37,12 +38,18 @@ const Auth = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const user = decodeToken();
 
-  useEffect(() => { 
+  useEffect(() => {
     if (location.pathname === "/") {
       navigate("/auth");
     }
-  }, [location.pathname, navigate]);
+    if (user && user.role === "employee") {
+      navigate("/employee");
+    } else if (user && user.role === "admin") {
+      navigate("/admin");
+    }
+  }, [location.pathname, navigate, user]);
   return (
     <Grid
       container

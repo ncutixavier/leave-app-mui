@@ -13,6 +13,8 @@ import Register from "../pages/auth/Register";
 import Dashboard from "../pages/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { decodeToken } from "../utils/auth";
+import ProtectRoute from "./ProtectRoute";
 
 const theme = createTheme({
   palette: {
@@ -45,21 +47,38 @@ const theme = createTheme({
 });
 
 const Index = () => {
+  const user = decodeToken();
+
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer />
       <Router>
         <Routes>
           <Route path="/" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/auth/" element={<Auth />}>
+          <Route
+            path="/employee"
+            element={
+              <ProtectRoute isAllowed={user && user.role === "employee"}>
+                <Dashboard />
+              </ProtectRoute>
+            }
+          />
+          <Route path="/auth" element={<Auth />}>
             <Route path="" element={<Login />} />
             <Route path="login" element={<Login />} />
             <Route path="recover-password" element={<ForgotPassword />} />
             <Route path="reset-password" element={<ResetPassword />} />
             <Route path="register" element={<Register />} />
           </Route>
-          <Route path="admin" element={<Layout />}>
+
+          <Route
+            path="admin"
+            element={
+              <ProtectRoute isAllowed={user && user.role === "admin"}>
+                <Layout />
+              </ProtectRoute>
+            }
+          >
             <Route path="" element={<Admin />} />
             <Route exact path="departments" element={<Department />} />
             <Route exact path="users" element={<Users />} />
