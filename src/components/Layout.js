@@ -17,11 +17,13 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import FolderIcon from "@mui/icons-material/Folder";
 import { useTheme } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
+import { decodeToken } from "../utils/auth";
 
 export default function Layout() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const user = decodeToken();
 
   const toggleDrawer = (open) => (event) => {
     if (event && (event.key === "Tab" || event.key === "Shift")) {
@@ -48,6 +50,13 @@ export default function Layout() {
       icon: <FolderIcon style={{ color: "white" }} />,
     },
   ];
+
+  React.useEffect(() => { 
+    if (!(user && user.role === "admin")) { 
+      localStorage.clear();
+      navigate("/auth");
+    }
+  }, [navigate, user]);
 
   const list = () => (
     <Box

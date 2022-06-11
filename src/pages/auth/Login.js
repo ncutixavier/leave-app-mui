@@ -33,7 +33,6 @@ export default function Login() {
   const theme = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const user = decodeToken();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Invalid email"),
@@ -57,9 +56,11 @@ export default function Login() {
       const res = await dispatch(login(data)).unwrap();
       if (res.status === 200) {
         setIsSubmitted(false);
-        if (user && user.role === "employee") {
+         const user = decodeToken();
+        console.log(res.data, user);
+        if (res.data.user.role === "employee") {
           navigate("/employee");
-        } else if (user && user.role === "admin") {
+        } else if(res.data.user.role === "admin") {
           navigate("/admin");
         }
       }
