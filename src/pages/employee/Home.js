@@ -1,7 +1,7 @@
 import * as React from "react";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import { Box, Grid, Container, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import {
@@ -48,7 +48,7 @@ export default function Home() {
   const theme = useTheme();
 
   return (
-    <Container sx={{ flexGrow: 1, mt: 3, minWidth: "100%" }}>
+    <Box>
       <Grid
         container
         spacing={{ xs: 2, md: 12 }}
@@ -91,9 +91,17 @@ export default function Home() {
             variant="outlined"
             sx={{ padding: 2, mb: 2 }}
           ></Paper>
-          <Leaves />
+          <Box
+            sx={{
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              width: { xs: "90vw", md: "100%" },
+            }}
+          >
+            <Leaves />
+          </Box>
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 }

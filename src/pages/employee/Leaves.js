@@ -51,10 +51,7 @@ const Leaves = () => {
       component={Paper}
       elevation={0}
       sx={{
-        maxHeight: {
-          md: "calc(100vh - 35vh)",
-          sm: "calc(100vh - 24px)",
-        },
+        maxHeight: "65vh",
       }}
     >
       <Table
