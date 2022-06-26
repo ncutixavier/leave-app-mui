@@ -10,6 +10,8 @@ import getAllUsersReducer from "./features/user/getAllUsers";
 import forgotpasswordReducer from "./features/auth/ForgotPasswordSlice";
 import resetpasswordReducer from "./features/auth/ResetPasswordSlice";
 import registerReducer from "./features/auth/RegisterSlice";
+import { getLeavesReducer } from "./features/leave/getLeaves";
+import { getReportReducer } from "./features/leave/getReports";
 
 const reducer = {
   login: loginReducer,
@@ -21,6 +23,8 @@ const reducer = {
   forgotPassword: forgotpasswordReducer,
   resetPassword: resetpasswordReducer,
   register: registerReducer,
+  getLeaves: getLeavesReducer,
+  getReport: getReportReducer,
 };
 
 const middleware = [];

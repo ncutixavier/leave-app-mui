@@ -10,13 +10,12 @@ import { styled } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-function createData(date, days, leave, status) {
-  return { date, days, leave, status };
-}
-
-const rows = Array.from({ length: 50 }).map((_, index) => {
-  return createData("From 12 May - 25 May", "5", "Vacation", "Pending");
-});
+import { useDispatch, useSelector } from "react-redux";
+import { selectGetLeaves, getLeaves } from "../../features/leave/getLeaves";
+import LeavesTableSkeleton from "../../skeletons/LeavesTableSkeleton";
+import {convertDateRange} from "../../utils/date";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,6 +45,15 @@ const StyledTableHeader = styled(TableHead)(({ theme }) => ({
 }));
 
 const Leaves = () => {
+  const dispatch = useDispatch();
+  const { leaves, loading } = useSelector(selectGetLeaves);
+
+  React.useEffect(() => { 
+    dispatch(getLeaves());
+  }, [dispatch]);
+
+  if (loading) return <LeavesTableSkeleton />;
+
   return (
     <TableContainer
       component={Paper}
@@ -70,19 +78,35 @@ const Leaves = () => {
           </TableRow>
         </StyledTableHeader>
         <TableBody>
-          {rows.map((row) => (
+          {leaves?.data?.requests?.map((row) => (
             <StyledTableRow key={row._id}>
-              <StyledTableCell>{row.date}</StyledTableCell>
-              <StyledTableCell>{row.days}</StyledTableCell>
-              <StyledTableCell>{row.leave}</StyledTableCell>
-              <StyledTableCell>{row.status}</StyledTableCell>
+              <StyledTableCell>
+                {convertDateRange(row?.startDate, row?.returnDate)}
+              </StyledTableCell>
+              <StyledTableCell>{row?.numberOfDays}</StyledTableCell>
+              <StyledTableCell>{row?.type}</StyledTableCell>
+              <StyledTableCell>
+                {row?.status?.charAt(0).toUpperCase() + row?.status?.slice(1)}
+              </StyledTableCell>
               <StyledTableCell align="center">
-                <IconButton color="error">
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton color="primary">
-                  <EditIcon />
-                </IconButton>
+                {row?.status === "pending" ? (
+                  <>
+                    <IconButton color="error">
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton color="primary">
+                      <EditIcon />
+                    </IconButton>
+                  </>
+                ) : row?.status === "approved" ? (
+                  <IconButton color="success">
+                    <VerifiedIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton color="warning">
+                    <DoNotDisturbIcon />
+                  </IconButton>
+                )}
               </StyledTableCell>
             </StyledTableRow>
           ))}

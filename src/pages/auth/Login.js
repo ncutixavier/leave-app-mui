@@ -21,7 +21,6 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { showErrorMessage } from "../../utils/toast";
 import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
-import { decodeToken } from "../../utils/auth";
 
 const FormInput = styled("div")(({ theme }) => ({
   height: "70px",
@@ -56,8 +55,6 @@ export default function Login() {
       const res = await dispatch(login(data)).unwrap();
       if (res.status === 200) {
         setIsSubmitted(false);
-         const user = decodeToken();
-        console.log(res.data, user);
         if (res.data.user.role === "employee") {
           navigate("/employee");
         } else if(res.data.user.role === "admin") {
