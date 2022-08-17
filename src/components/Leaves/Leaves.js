@@ -91,11 +91,11 @@ const Leaves = () => {
               <StyledTableCell align="center">
                 {row?.status === "pending" ? (
                   <>
+                    <IconButton color="info">
+                      <EditIcon />
+                    </IconButton>
                     <IconButton color="error">
                       <DeleteIcon />
-                    </IconButton>
-                    <IconButton color="primary">
-                      <EditIcon />
                     </IconButton>
                   </>
                 ) : row?.status === "approved" ? (
