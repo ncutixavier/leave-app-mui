@@ -154,7 +154,7 @@ export default function RequestLeave(props) {
           </TextField>
           <TextField
             margin="dense"
-            label="Comments"
+            label="Reason for leave"
             fullWidth
             variant="standard"
             maxRows={4}

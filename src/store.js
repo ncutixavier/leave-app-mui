@@ -12,6 +12,8 @@ import resetpasswordReducer from "./features/auth/ResetPasswordSlice";
 import registerReducer from "./features/auth/RegisterSlice";
 import { getLeavesReducer } from "./features/leave/getLeaves";
 import { getReportReducer } from "./features/leave/getReports";
+import requestLeaveReducer from "./features/leave/requestLeave";
+import deleteLeaveReducer from "./features/leave/deleteLeave";
 
 const reducer = {
   login: loginReducer,
@@ -25,6 +27,8 @@ const reducer = {
   register: registerReducer,
   getLeaves: getLeavesReducer,
   getReport: getReportReducer,
+  requestLeave: requestLeaveReducer,
+  deleteLeave: deleteLeaveReducer,
 };
 
 const middleware = [];
