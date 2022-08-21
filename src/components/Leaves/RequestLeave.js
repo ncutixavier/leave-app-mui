@@ -1,6 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import { TextField, IconButton, MenuItem } from "@mui/material";
+import { TextField, IconButton, Alert } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -16,22 +16,42 @@ import { requestLeave } from "../../features/leave/requestLeave";
 import { requestLeaveSchema } from "../../validations/index";
 import { showErrorMessage } from "../../utils/toast";
 import { getLeaves } from "../../features/leave/getLeaves";
+import SelectDropdown from "../form/SelectDropdown";
 
 export default function RequestLeave(props) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [leaveType, setLeaveType] = React.useState("");
+  const dateOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const leaveTypes = [
+    "Sick Leave",
+    "Vacation Leave",
+    "Maternity Leave",
+    "Paternity Leave",
+    "Bereavement Leave",
+    "Study Leave",
+    "Other",
+  ];
 
   const {
     register,
     handleSubmit,
     setValue,
-    getValues,
-    control,
+    watch,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(requestLeaveSchema),
+    defaultValues: {
+      type: "",
+    },
   });
 
   const onSubmit = async (data) => {
@@ -42,12 +62,23 @@ export default function RequestLeave(props) {
         setIsSubmitted(false);
         props.close();
         dispatch(getLeaves());
+        reset();
       }
     } catch (error) {
       setIsSubmitted(false);
       showErrorMessage(error.data.message);
     }
   };
+
+  const addDays = (date, days) => {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  };
+
+  const leaveDays = parseInt(watch("numberOfDays"));
+  const leaveStartDate = watch("startDate");
+  console.log(leaveStartDate);
 
   return (
     <div>
@@ -86,17 +117,16 @@ export default function RequestLeave(props) {
             label="When would you like to take your leave?"
             type="date"
             fullWidth
+            defaultValue={addDays(new Date(), 1).toISOString().split("T")[0]}
             variant="standard"
             InputLabelProps={{
               shrink: true,
             }}
             inputProps={{
-              min: new Date(new Date().setDate(new Date().getDate() + 1))
-                .toISOString()
-                .split("T")[0],
+              min: addDays(new Date(), 1).toISOString().split("T")[0],
             }}
             autoFocus
-            sx={{ mb: 1 }}
+            // sx={{ mb: 1 }}
             {...register("startDate")}
             error={errors.startDate ? true : false}
             helperText={errors.startDate ? errors.startDate.message : null}
@@ -120,38 +150,19 @@ export default function RequestLeave(props) {
               errors.numberOfDays ? errors.numberOfDays.message : null
             }
           />
-          <TextField
-            id="select"
+          <SelectDropdown
             label="Leave type"
-            value={getValues("type")}
-            defaultValue=""
-            select
-            margin="dense"
-            fullWidth
-            variant="standard"
-            sx={{ mb: 1 }}
-            control={control}
-            onChange={(e) =>
-              setValue("select", e.target.value, { shouldValidate: true })
-            }
-            {...register("type")}
+            onChange={(e) => {
+              setLeaveType(e.target.value);
+              setValue("type", e.target.value);
+            }}
+            value={leaveType}
+            options={leaveTypes}
             error={errors.type ? true : false}
             helperText={errors.type ? errors.type.message : null}
-          >
-            {[
-              "Sick Leave",
-              "Vacation Leave",
-              "Maternity Leave",
-              "Paternity Leave",
-              "Bereavement Leave",
-              "Study Leave",
-              "Other",
-            ].map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
+            name="type"
+            register={register}
+          />
           <TextField
             margin="dense"
             label="Reason for leave"
@@ -161,6 +172,15 @@ export default function RequestLeave(props) {
             multiline
             {...register("reason")}
           />
+          {leaveDays > 0 && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Return date:{" "}
+              {addDays(leaveStartDate, leaveDays).toLocaleDateString(
+                "en-US",
+                dateOptions
+              )}
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={props.close}>Cancel</Button>
