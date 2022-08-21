@@ -19,6 +19,7 @@ import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 import { toast } from "react-toastify";
 import { deleteLeave } from "../../features/leave/deleteLeave";
 import ConfirmDialog from "../../components/ConfirmDialog";
+import RequestLeave from "./RequestLeave";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,6 +53,8 @@ const Leaves = () => {
   const { leaves, loading } = useSelector(selectGetLeaves);
   const [open, setOpen] = React.useState(false);
   const [selectedLeave, setSelectedLeave] = React.useState(null);
+  const [openEditLeave, setOpenEditLeave] = React.useState(false);
+  const [currentLeave, setCurrentLeave] = React.useState(null);
 
   React.useEffect(() => {
     dispatch(getLeaves());
@@ -60,6 +63,11 @@ const Leaves = () => {
   const handleOpen = (leave) => { 
     setSelectedLeave(leave);
     setOpen(true);
+  }
+
+  const handleOpenEditeave = (leave) => { 
+    setCurrentLeave(leave);
+    setOpenEditLeave(true);
   }
 
   const handleDeleteLeave = async () => {
@@ -91,6 +99,11 @@ const Leaves = () => {
         confirm={() => handleDeleteLeave()}
         title="Confirm Delete"
         message="Are you sure you want to delete this leave?"
+      />
+      <RequestLeave
+        open={openEditLeave}
+        close={() => setOpenEditLeave(false)}
+        leave={currentLeave}
       />
       <TableContainer
         component={Paper}
@@ -128,7 +141,7 @@ const Leaves = () => {
                 <StyledTableCell align="center">
                   {row?.status === "pending" ? (
                     <>
-                      <IconButton color="info">
+                      <IconButton color="info" onClick={() => handleOpenEditeave(row)}>
                         <EditIcon />
                       </IconButton>
                       <IconButton color="error" onClick={() => handleOpen(row)}>

@@ -14,6 +14,7 @@ import { getLeavesReducer } from "./features/leave/getLeaves";
 import { getReportReducer } from "./features/leave/getReports";
 import requestLeaveReducer from "./features/leave/requestLeave";
 import deleteLeaveReducer from "./features/leave/deleteLeave";
+import editLeaveReducer from "./features/leave/editLeave";
 
 const reducer = {
   login: loginReducer,
@@ -29,6 +30,7 @@ const reducer = {
   getReport: getReportReducer,
   requestLeave: requestLeaveReducer,
   deleteLeave: deleteLeaveReducer,
+  editLeave: editLeaveReducer,
 };
 
 const middleware = [];

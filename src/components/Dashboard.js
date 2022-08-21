@@ -142,7 +142,7 @@ export default function Dashboard(props) {
             <MenuIcon />
           </IconButton>
           <Typography sx={{ flexGrow: 1, fontWeight: 800 }}>
-            LEAVE APP
+            DASHBOARD
           </Typography>
           <Box
             sx={{

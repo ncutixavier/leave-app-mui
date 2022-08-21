@@ -13,10 +13,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
 import { requestLeave } from "../../features/leave/requestLeave";
+import { editLeave } from "../../features/leave/editLeave";
 import { requestLeaveSchema } from "../../validations/index";
 import { showErrorMessage } from "../../utils/toast";
 import { getLeaves } from "../../features/leave/getLeaves";
 import SelectDropdown from "../form/SelectDropdown";
+import { getReturnDate } from "../../utils/date";
 
 export default function RequestLeave(props) {
   const theme = useTheme();
@@ -49,10 +51,17 @@ export default function RequestLeave(props) {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(requestLeaveSchema),
-    defaultValues: {
-      type: "",
-    },
   });
+
+  React.useEffect(() => {
+    if (props.leave) {
+      setLeaveType(props.leave?.type);
+      setValue("type", props.leave?.type);
+      setValue("startDate", props.leave?.startDate.split("T")[0]);
+      setValue("numberOfDays", props.leave?.numberOfDays);
+      setValue("reason", props.leave?.reason);
+    }
+  }, [props.leave, setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -70,6 +79,25 @@ export default function RequestLeave(props) {
     }
   };
 
+  const onSave = async (data) => {
+    try {
+      console.log("SAVE", data);
+      setIsSubmitted(true);
+      data = { ...data, id: props.leave?._id };
+      const res = await dispatch(editLeave(data)).unwrap();
+      if (res.status === 200) {
+        setIsSubmitted(false);
+        props.close();
+        dispatch(getLeaves());
+        reset();
+      }
+    } catch (error) {
+      console.log(error);
+      setIsSubmitted(false);
+      showErrorMessage(error.data.message);
+    }
+  };
+
   const addDays = (date, days) => {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -78,7 +106,6 @@ export default function RequestLeave(props) {
 
   const leaveDays = parseInt(watch("numberOfDays"));
   const leaveStartDate = watch("startDate");
-  console.log(leaveStartDate);
 
   return (
     <div>
@@ -95,7 +122,7 @@ export default function RequestLeave(props) {
             color: "white",
           }}
         >
-          Request a Leave
+          {props.leave ? "Edit Leave" : "Request Leave"}
           <IconButton
             aria-label="close"
             onClick={props.close}
@@ -165,7 +192,7 @@ export default function RequestLeave(props) {
           />
           <TextField
             margin="dense"
-            label="Reason for leave"
+            label="More comments"
             fullWidth
             variant="standard"
             maxRows={4}
@@ -175,7 +202,7 @@ export default function RequestLeave(props) {
           {leaveDays > 0 && (
             <Alert severity="info" sx={{ mt: 2 }}>
               Return date:{" "}
-              {addDays(leaveStartDate, leaveDays).toLocaleDateString(
+              {getReturnDate(leaveStartDate, leaveDays).toLocaleDateString(
                 "en-US",
                 dateOptions
               )}
@@ -184,9 +211,15 @@ export default function RequestLeave(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={props.close}>Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitted}>
-            {isSubmitted ? "Submitting..." : "Submit"}
-          </Button>
+          {props.leave ? (
+            <Button onClick={handleSubmit(onSave)} disabled={isSubmitted}>
+              {isSubmitted ? "Saving..." : "Save"}
+            </Button>
+          ) : (
+            <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitted}>
+              {isSubmitted ? "Submitting..." : "Submit"}
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

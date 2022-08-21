@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: "https://nx-leave-app.herokuapp.com/api/v1",
-  // baseURL: "http://localhost:3005/api/v1",
+  // baseURL: "https://nx-leave-app.herokuapp.com/api/v1",
+  baseURL: "http://localhost:3005/api/v1",
   // baseURL: "https://nx-leave-backend.cleverapps.io/api/v1",
 });
 
