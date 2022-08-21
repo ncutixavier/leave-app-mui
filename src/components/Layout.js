@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Outlet, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
-import { List } from "@mui/material";
+import { List, Avatar, ListItemButton, CssBaseline } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -18,19 +18,25 @@ import FolderIcon from "@mui/icons-material/Folder";
 import { useTheme } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
 import { decodeToken } from "../utils/auth";
+import logo from "../assets/logo_light.png";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 
-export default function Layout() {
+const drawerWidth = 230;
+
+export default function Layout(props) {
+  const { window } = props;
   const navigate = useNavigate();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
   const user = decodeToken();
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const toggleDrawer = (open) => (event) => {
-    if (event && (event.key === "Tab" || event.key === "Shift")) {
-      return;
-    }
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
-    setOpen(open);
+  const logout = () => {
+    localStorage.clear();
+    navigate("/auth");
   };
 
   const menuItems = [
@@ -51,118 +57,205 @@ export default function Layout() {
     },
   ];
 
-  React.useEffect(() => { 
-    if (!(user && user.role === "admin")) { 
+  React.useEffect(() => {
+    if (!(user && user.role === "admin")) {
       localStorage.clear();
       navigate("/auth");
     }
   }, [navigate, user]);
 
-  const list = () => (
+  const drawer = (
     <Box
-      sx={{ width: "93%" }}
-      role="presentation"
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
+      sx={{
+        backgroundColor: theme.palette.primary.main,
+      }}
     >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: theme.spacing(5, 0, 2, 0),
+        }}
+      >
+        <Avatar
+          variant="square"
+          alt="Logo"
+          src={logo}
+          sx={{ width: 100, height: 58 }}
+        />
+      </Box>
+      <Typography
+        sx={{
+          textAlign: "center",
+          padding: theme.spacing(0, 3, 12),
+          fontWeight: 800,
+        }}
+      >
+        Leave Application System
+      </Typography>
+      <Divider />
       <List>
         {menuItems.map((item, index) => (
           <ListItem
-            button
             key={index}
+            button
             onClick={() => navigate(item.path)}
-            sx={{ borderRadius: "0 50px 50px 0" }}
+            sx={{ padding: theme.spacing(0, 4) }}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemButton>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText
+                primary={item.text}
+                sx={{
+                  color: theme.palette.primary.light,
+                }}
+              />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>
+      <Divider />
     </Box>
   );
 
-  const handlelogout = () => {
-    localStorage.removeItem("token");
-    navigate("/auth/login");
-  };
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        backgroundColor: theme.palette.secondary.main,
-        minHeight: "100vh",
-      }}
-    >
-      <AppBar position="sticky">
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar
+        elevation={0}
+        color="primary"
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+          borderBottom: "1px solid #e0e0e0",
+        }}
+      >
         <Toolbar>
           <IconButton
-            size="large"
-            edge="start"
             color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleDrawer("left", true)}
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="body1"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1 }}
-          >
-            Leave Application System
+          <Typography sx={{ flexGrow: 1, fontWeight: 800 }}>
+            DASHBOARD
           </Typography>
-          {localStorage.getItem("token") ? (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography noWrap component="div">
+              Welcome,
+            </Typography>
+            <Typography
+              noWrap
+              component="div"
+              color={theme.palette.primary.contrast}
+              ml={1}
+            >
+              {localStorage.getItem("user")}
+            </Typography>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          PaperProps={{
+            sx: {
+              backgroundColor: theme.palette.primary.main,
+            },
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+          <Box
+            sx={{
+              height: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: theme.palette.primary.main,
+            }}
+          >
             <Button
-              color="inherit"
-              variant="outlined"
-              onClick={() => {
-                handlelogout();
-              }}
+              variant="contained"
+              onClick={() => logout()}
+              startIcon={<ExitToAppOutlinedIcon />}
             >
               Logout
             </Button>
-          ) : (
-            <Button
-              color="inherit"
-              variant="outlined"
-              onClick={() => navigate("/auth/login")}
-            >
-              Login
-            </Button>
-          )}
-        </Toolbar>
-      </AppBar>
-      <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-        <Box
+          </Box>
+        </Drawer>
+        <Drawer
+          variant="permanent"
           sx={{
-            backgroundColor: theme.palette.primary.main,
-            height: "100%",
-            color: "white",
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
           }}
+          open
         >
-          <Toolbar sx={{ width: "170px" }}>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={toggleDrawer(false)}
+          {drawer}
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: theme.palette.primary.main,
+            }}
+          >
+            <Button
+              variant="contained"
+              onClick={() => logout()}
+              startIcon={<ExitToAppOutlinedIcon />}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="body1" noWrap component="div">
-              Leave Application System
-            </Typography>
-          </Toolbar>
-          <Divider />
-          {list()}
-        </Box>
-      </Drawer>
-      <Outlet />
+              Logout
+            </Button>
+          </Box>
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        <Outlet />
+      </Box>
     </Box>
   );
 }

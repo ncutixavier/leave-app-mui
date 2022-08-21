@@ -220,7 +220,7 @@ const Users = () => {
   let content, departmentOptions;
   if (loading) {
     content = (
-      <Box sx={{ position: "absolute", left: "47.3%", top: "45%" }}>
+      <Box sx={{ position: "absolute", left: "55%", top: "45%" }}>
         <CircularProgress size={60} />
       </Box>
     );

@@ -144,7 +144,7 @@ const Department = () => {
   let content, rowsData;
   if (loadingStatus) {
     content = (
-      <Box sx={{ position: "absolute", left: "47.5%", top: "45%" }}>
+      <Box sx={{ position: "absolute", left: "55%", top: "45%" }}>
         <CircularProgress size={60} />
       </Box>
     );
